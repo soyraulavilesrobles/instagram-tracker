@@ -10,7 +10,7 @@ DATA_FILE = 'data.csv'
 
 
 def get_followers(username):
-    url = 'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + username
+    url = 'https://i.instagram.com/api/v1/users/web_profile_info/?username=' + username
     headers = {
         'x-ig-app-id': '936619743392459',
         'Cookie': COOKIE,
