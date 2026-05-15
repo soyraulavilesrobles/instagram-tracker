@@ -1,4 +1,4 @@
-import requests
+import httpx
 import csv
 import os
 import time
@@ -9,7 +9,7 @@ USERNAMES_FILE = 'usernames.txt'
 DATA_FILE = 'data.csv'
 
 
-def get_followers(username):
+def get_followers(username, client):
     url = 'https://i.instagram.com/api/v1/users/web_profile_info/?username=' + username
     headers = {
         'x-ig-app-id': '936619743392459',
@@ -18,13 +18,9 @@ def get_followers(username):
         'Accept': '*/*',
         'Accept-Language': 'es-CL,es;q=0.9,en;q=0.8',
         'Referer': 'https://www.instagram.com/',
-        'Origin': 'https://www.instagram.com',
-        'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Dest': 'empty',
     }
     try:
-        resp = requests.get(url, headers=headers, timeout=10)
+        resp = client.get(url, headers=headers, timeout=10)
         if resp.status_code != 200:
             return 'ERROR_' + str(resp.status_code)
         data = resp.json()
@@ -46,11 +42,12 @@ def main():
             writer.writerow(['fecha'] + usernames)
 
     row = [today]
-    for username in usernames:
-        count = get_followers(username)
-        print('@' + username + ': ' + str(count))
-        row.append(count)
-        time.sleep(2)
+    with httpx.Client(http2=True) as client:
+        for username in usernames:
+            count = get_followers(username, client)
+            print('@' + username + ': ' + str(count))
+            row.append(count)
+            time.sleep(2)
 
     with open(DATA_FILE, 'a', newline='') as f:
         writer = csv.writer(f)
