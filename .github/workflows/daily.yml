@@ -1,9 +1,7 @@
 name: Daily Instagram Tracker
 
 on:
-  schedule:
-    - cron: '0 12 * * *'  # 9am Chile (UTC-3)
-  workflow_dispatch:       # permite correrlo manualmente desde GitHub
+  workflow_dispatch:  # solo manual — el cron real corre en la RPi
 
 jobs:
   fetch:
